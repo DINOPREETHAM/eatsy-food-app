@@ -1,0 +1,16 @@
+import connectDB from "../../mongodb";
+import User from "../../../models/User";
+import { NextApiRequest, NextApiResponse } from "next";
+
+const getCart = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const id: any = req.query.id;
+    await connectDB();
+    const user = await User.findById(id).lean(); // in client side, we have to use absolute URL for the fetch request. when we do this, we are unable to get the session data in the backend. So in this case, req.query.id was used. the user id is attached in the fetch request URL and extracted to be used here.
+    return res.status(201).json({ message: "Cart info retrieve from user's MongoDB Database", body: user || {} });
+  } catch (e: any) {
+    return res.status(400).json({ message: "Fail to retrieve cart info from user's MongoDB Database", body: e.message });
+  }
+};
+
+export default getCart;

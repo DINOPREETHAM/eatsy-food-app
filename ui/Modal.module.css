@@ -1,0 +1,29 @@
+.modalOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 1000%;
+  display: flex;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalStyle {
+  position: sticky;
+  top: 10rem;
+  width: 50rem;
+  height: 40rem;
+  border-radius: 15px;
+  padding: 15px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: flex-end;
+  font-size: 25px;
+}
+
+.modalClose {
+  cursor: auto;
+}
