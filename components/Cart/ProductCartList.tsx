@@ -26,26 +26,30 @@ const ProductCartList: React.FC<{ cart: ProductModel[] }> = (props) => {
           </div>
           {props.cart.map((product: ProductModel) => {
             // Safe image URL resolver: handle array, string, or fallback
-            let imageUrl = Array.isArray(product.productImage)
+            const rawImageUrl = Array.isArray(product.productImage)
               ? product.productImage[0]
               : typeof product.productImage === 'string'
               ? product.productImage
               : null;
             
             // Check if image URL is valid
-            const isValidImage = imageUrl && 
-              typeof imageUrl === 'string' && 
-              imageUrl.trim() !== '' && 
-              imageUrl !== 'null' && 
-              imageUrl !== 'undefined' &&
-              imageUrl !== '/no-image.png' &&
+            const isValidImage = rawImageUrl && 
+              typeof rawImageUrl === 'string' && 
+              rawImageUrl.trim() !== '' && 
+              rawImageUrl !== 'null' && 
+              rawImageUrl !== 'undefined' &&
+              rawImageUrl !== '/no-image.png' &&
               !imageErrors[product._id];
             
             // Normalize URL: encode spaces and add extension if needed
-            if (isValidImage && typeof imageUrl === 'string' && imageUrl.includes('res.cloudinary.com')) {
-              imageUrl = imageUrl.replace(/ /g, '%20');
-              if (!/\.(jpg|jpeg|png|gif|webp|svg)$/i.test(imageUrl)) {
-                imageUrl = imageUrl.replace(/\/$/, '') + '.jpg';
+            let normalizedImageUrl: string = '';
+            if (isValidImage && typeof rawImageUrl === 'string') {
+              normalizedImageUrl = rawImageUrl;
+              if (normalizedImageUrl.includes('res.cloudinary.com')) {
+                normalizedImageUrl = normalizedImageUrl.replace(/ /g, '%20');
+                if (!/\.(jpg|jpeg|png|gif|webp|svg)$/i.test(normalizedImageUrl)) {
+                  normalizedImageUrl = normalizedImageUrl.replace(/\/$/, '') + '.jpg';
+                }
               }
             }
             
@@ -56,9 +60,9 @@ const ProductCartList: React.FC<{ cart: ProductModel[] }> = (props) => {
             return (
             <div className={classes.body} key={product._id}>
               <a href={`/products/${product._id}`} className={classes.imageLink}>
-                {isValidImage ? (
+                {isValidImage && normalizedImageUrl ? (
                   <img
-                    src={imageUrl}
+                    src={normalizedImageUrl}
                     alt={product.productName}
                     className={classes.image}
                     style={{ width: "100%", height: "auto" }}
